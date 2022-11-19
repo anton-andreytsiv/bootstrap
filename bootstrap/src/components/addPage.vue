@@ -40,6 +40,7 @@
 
 <script>
 import listService from '@/services/listService'
+import { incrementIndex, addAnswer, addQuestion, saveAns, saveQuest } from '../services/modules'
 import { ref } from 'vue'
 
 export default {
@@ -55,25 +56,10 @@ export default {
     let questions = ref([{title:"",
                     answers: [{answer:""}]}])
 
-    return { questions}
+    return { questions, incrementIndex, addAnswer, addQuestion, saveAns, saveQuest}
 
   },
-  methods:{
-    incrementIndex(i) {
-        return i + 1;
-    },
-    addAnswer(index){
-     this.questions[index].answers.push({answer:""})
-    },
-    addQuestion(){
-      this.questions.push({title:"", answers:[{answer:""}]})
-    },
-    saveAns(qIndex, aIndex){
-      this.questions[qIndex].answers[aIndex].answer = this.$refs["answer"+qIndex+"_"+aIndex][0].value
-    },
-    saveQuest(qIndex){
-      this.questions[qIndex].title = this.$refs["question"+qIndex][0].value
-    },
+  methods:{    
     async saveToList(){
       const res = await listService.saveToList(this.title, this.questions)
       if(res){

@@ -46,6 +46,7 @@
   
   <script>
   import listService from '@/services/listService'
+  import { incrementIndex, addAnswer, addQuestion, saveAns, saveQuest } from '../services/modules'
   import { ref } from 'vue'
   
   export default {
@@ -53,19 +54,14 @@
     props: ['themeId'],
 
     async setup(props){
-    let data = ref()
-    if(props.themeId){
-      const list = await listService.getQuestionsByListId(props.themeId)
-      data.value =  list[0]
-    }
-    return { data }
-
-
-  },
-  methods:{
-    incrementIndex(i) {
-        return i + 1;
+      let data = ref()
+      if(props.themeId){
+        const list = await listService.getQuestionsByListId(props.themeId)
+        data.value =  list[0]
+      }
+    return { data, incrementIndex, addAnswer, addQuestion, saveAns, saveQuest }
     },
+  methods:{
     async saveTheme(){
         const res = await listService.updList(this.data.id, this.data.title)
         if (res){
@@ -75,6 +71,7 @@
             alert('error of update')
         }
     },
+
     async updateQuestion(qIndex){
         const newQuestion = this.data.questions[qIndex]
         const res = await listService.updQuestion(newQuestion.id, newQuestion.idList, newQuestion.title)
@@ -86,38 +83,24 @@
             alert('error of update')
         }
     },
+
     async updateAnswer(qIndex, aIndex){
-    let newAnsw = this.data.questions[qIndex].answers[aIndex]
-    newAnsw.idQuestion = this.data.questions[qIndex].id
-    if (newAnsw.idQuestion){
-        const res = await listService.updAnswer(newAnsw.id, newAnsw.answer, newAnsw.idQuestion)
-        if (res){
-            this.data.questions[qIndex].answers[aIndex] = res
-            alert('answer updated')
-        } else {
-            alert('error of update')
-        }
-    } else {
-        alert ('Please save question before saving an answer')
-    }
-    
-    },
-    addAnswer(index){
-        const idQuestion = this.data.questions[index].id
-        this.data.questions[index].answers.push({answer:"", idQuestion})
-    },
-    addQuestion(){
-        const idList = this.data.id
-        this.data.questions.push({title:"", idList, answers:[{answer:""}]})
-    },
-    saveAns(qIndex, aIndex){
-      this.data.questions[qIndex].answers[aIndex].answer = this.$refs["answer"+qIndex+"_"+aIndex][0].value
-    },
-    saveQuest(qIndex){
-      this.data.questions[qIndex].title = this.$refs["question"+qIndex][0].value
+      let newAnsw = this.data.questions[qIndex].answers[aIndex]
+      newAnsw.idQuestion = this.data.questions[qIndex].id
+      if (newAnsw.idQuestion){
+          const res = await listService.updAnswer(newAnsw.id, newAnsw.answer, newAnsw.idQuestion)
+          if (res){
+              this.data.questions[qIndex].answers[aIndex] = res
+              alert('answer updated')
+          } else {
+              alert('error of update')
+          }
+      } else {
+          alert ('Please save question before saving an answer')
+      }
+      
     }
   }
-  
   }
   </script>
   
