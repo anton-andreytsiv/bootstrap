@@ -6,4 +6,6 @@ RUN npm install
 EXPOSE 8000
 RUN chown -R node /app
 USER node
+RUN npx prisma generate
+
 CMD ["npm", "run", "start:dev"]
