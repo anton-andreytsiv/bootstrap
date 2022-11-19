@@ -1,0 +1,41 @@
+version: "3.9"
+services:
+  postgres_db:
+    container_name: postgres_db
+    image: postgres:14.1
+    restart: on-failure
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 1234
+      POSTGRES_DB: list_db
+    ports: 
+      - '2345:5432'
+    volumes:
+      - postgres_db:/var/lib/postgresql/data
+
+  api:
+    container_name: node
+    build:
+      context: ./backend
+      dockerfile: ./Dockerfile
+    depends_on:
+      - postgres_db
+
+    ports:
+      - '8000:8000'
+    volumes:
+      - ./backend/src:/app/src
+      - ./backend/prisma:/app/prisma
+
+  client:
+    container_name: client
+    build:
+      context: ./bootstrap/
+      dockerfile: ./Dockerfile
+    ports:
+      - '8080:8080'
+    volumes:
+      - ./frontend/src:/app/src
+ 
+volumes:
+  postgres_db:
