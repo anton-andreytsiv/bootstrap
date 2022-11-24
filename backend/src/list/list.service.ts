@@ -22,9 +22,17 @@ export class ListService {
             include:{
                 questions:{
                     include:{
-                    answers:true
+                        answers:{
+                            orderBy:{
+                                id: 'asc'
+                            }        
+                        }
+                    },
+                    orderBy:{
+                        id: 'asc'
                     }                
-                }
+                },
+                
             },
             orderBy: {
                 id: 'asc'

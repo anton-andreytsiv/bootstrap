@@ -5,21 +5,21 @@
       <div class="mb-3 row">
           <label for="tittle" class="col-form-label text-start col-3">Title</label>
           <div class="col-9">
-            <input type="text" class="form-control col-5" v-model="title" placeholder="tittle of questions theme" />
+            <input type="text" class="form-control col-5" v-model="data.title" placeholder="tittle of questions theme" />
           </div>
       </div>
 
-      <div v-for="(question, index) in questions" :key="'question'+index" class="border mb-2 p-2">
+      <div v-for="(question, index) in data.questions" :key="'question'+index" class="border mb-2 p-2">
         <div class="mb-3 row" >
           <label for="question" class="col-form-label text-start col-3">Question #{{incrementIndex(index)}}</label>
           <div class="col-9">
-            <input type="text" class="form-control" :ref="'question'+index" placeholder="Question" @input="saveQuest(index)">
+            <input type="text" class="form-control" v-model="question.title" placeholder="Question">
           </div>
         </div>
         <div class="mb-3 row" v-for="(answer, aIndex) in question.answers" :key="aIndex">
            <label for="answer" class="col-form-label text-start col-3">Answer #{{incrementIndex(aIndex)}}</label>
            <div class="col-7">
-             <textarea class="form-control" :ref="'answer' + index + '_' + aIndex" rows="3" v-model="answer.answer" @input="saveAns(index,aIndex)" ></textarea>
+             <textarea class="form-control" rows="3" v-model="answer.answer" ></textarea>
            </div> 
            <div class="col-1 m-1">
             <button type="button" class="btn btn-primary" @click="addAnswer(index)">Add</button>
@@ -40,7 +40,7 @@
 
 <script>
 import listService from '@/services/listService'
-import { incrementIndex, addAnswer, addQuestion, saveAns, saveQuest } from '../services/modules'
+import { incrementIndex, addAnswer, addQuestion} from '../services/modules'
 import { ref } from 'vue'
 
 export default {
@@ -53,15 +53,16 @@ export default {
 
   async setup(){
 
-    let questions = ref([{title:"",
-                    answers: [{answer:""}]}])
+    let data = ref({title:"",
+                  questions: [{title:"",
+                              answers: [{answer:""}]}]})
 
-    return { questions, incrementIndex, addAnswer, addQuestion, saveAns, saveQuest}
+    return { data, incrementIndex, addAnswer, addQuestion}
 
   },
   methods:{    
     async saveToList(){
-      const res = await listService.saveToList(this.title, this.questions)
+      const res = await listService.saveToList(this.data.title, this.data.questions)
       if(res){
         alert("questions are saved")
         this.$router.push({path:'/'})

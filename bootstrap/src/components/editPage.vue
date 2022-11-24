@@ -5,7 +5,7 @@
         <div class="mb-3 p-2 row">
             <label for="tittle" class="col-form-label text-start col-3">Title</label>
             <div class="col-7">
-              <input type="text" class="form-control col-5" v-model="data.title" placeholder="tittle of questions theme" />
+              <input type="text" :ref="'title'+1" class="form-control col-5" v-model="data.title" placeholder="tittle of questions theme" />
             </div>
             <div class="col-2 d-grid">
                 <button type="button" class="btn btn-info"  @click="saveTheme()">update</button>
@@ -16,7 +16,7 @@
           <div class="mb-3 row" >
             <label for="question" class="col-form-label text-start col-3">Question #{{incrementIndex(index)}}</label>
             <div class="col-7">
-              <input type="text" :value="question.title" class="form-control" :ref="'question'+index" placeholder="Question" @input="saveQuest(index)">
+              <input type="text" v-model="question.title" class="form-control"  placeholder="Question" >
             </div>
             <div class="col-2 d-grid">
                 <button type="button" class="btn btn-info" :ref="'saveQ' + index" @click="updateQuestion(index)">update</button>
@@ -25,7 +25,7 @@
           <div class="mb-3 row" v-for="(answer, aIndex) in question.answers" :key="aIndex">
              <label for="answer" class="col-form-label text-start col-3">Answer #{{incrementIndex(aIndex)}}</label>
              <div class="col-7">
-               <textarea class="form-control" :ref="'answer' + index + '_' + aIndex" rows="3" v-model="answer.answer" @input="saveAns(index,aIndex)" ></textarea>
+               <textarea class="form-control"  rows="3" v-model="answer.answer"  ></textarea>
              </div> 
              <div class="col-2 d-grid gap-2">
               <button type="button" class="btn btn-primary" @click="addAnswer(index)">Add</button>
@@ -46,7 +46,7 @@
   
   <script>
   import listService from '@/services/listService'
-  import { incrementIndex, addAnswer, addQuestion, saveAns, saveQuest } from '../services/modules'
+  import { incrementIndex, addAnswer, addQuestion } from '../services/modules'
   import { ref } from 'vue'
   
   export default {
@@ -59,9 +59,10 @@
         const list = await listService.getQuestionsByListId(props.themeId)
         data.value =  list[0]
       }
-    return { data, incrementIndex, addAnswer, addQuestion, saveAns, saveQuest }
+    return { data, incrementIndex, addAnswer, addQuestion }
     },
   methods:{
+
     async saveTheme(){
         const res = await listService.updList(this.data.id, this.data.title)
         if (res){
